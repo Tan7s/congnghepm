@@ -6,11 +6,13 @@ use App\Common\Result;
 use Exception;
 use App\Models\CreateSchedule;
 use CodeIgniter\HTTP\ResponseInterface;
+use PHPUnit\Framework\Attributes\BeforeClass;
+use CodeIgniter\I18n\Time;
 
 class scheduleService extends BaseService
 {
 
-    
+
 
     private $schedule;
     //Construct
@@ -23,38 +25,74 @@ class scheduleService extends BaseService
     public function getSchedule()
     {
         return $this->schedule->table('lichhoc')
-        ->select('subject.name as subject_name, teacher.name as teacher_name, class.nameClass,lichhoc.id as id_lichhoc,lichhoc.buoi,lichhoc.date,lichhoc.timeStar,lichhoc.timeEnd')
-        ->join('subject', 'lichhoc.id_subject = subject.id')
-        ->join('teacher', 'lichhoc.id_teacher = teacher.id')
-        ->join('class', 'lichhoc.id_class = class.id')
-        ->get()
-        ->getResultArray();
+            ->select('subject.name as subject_name, teacher.name as teacher_name, class.nameClass,lichhoc.id as id_lichhoc,lichhoc.buoi,lichhoc.date,lichhoc.timeStar,lichhoc.timeEnd')
+            ->join('subject', 'lichhoc.id_subject = subject.id')
+            ->join('teacher', 'lichhoc.id_teacher = teacher.id')
+            ->join('class', 'lichhoc.id_class = class.id')
+            ->get()
+            ->getResultArray();
     }
-    public function getStudentsbyLichHoc($id_lichhoc){
+    public function getStudentsbyLichHoc($id_lichhoc)
+    {
         return $this->schedule->table('lichhoc')
-        ->select('student.name as studentName,lichhoc.buoi,lichhoc.date, student.id as id_student, lichhoc.id as id_lichhoc ')
-        ->join('student_class', 'lichhoc.id_class = student_class.class_id')->where('lichhoc.id', $id_lichhoc)
-        ->join('student', 'student_class.student_id = student.id')
-        ->get()
-        ->getResultArray();
+            ->select('student.name as studentName,lichhoc.buoi,lichhoc.date, student.id as id_student, lichhoc.id as id_lichhoc ')
+            ->join('student_class', 'lichhoc.id_class = student_class.class_id')->where('lichhoc.id', $id_lichhoc)
+            ->join('student', 'student_class.student_id = student.id')
+            ->get()
+            ->getResultArray();
     }
-    public function addSchedule($data){
-        try {
-            if ($this->schedule->insert($data)) {
+    public function addSchedule($data)
+    {
+        $currentTime = Time::now('Asia/Ho_Chi_Minh', 'en_US');
+        //dd($data);
+        if ($currentTime->toLocalizedString('yyyy-MM-dd') < $data['date'] || $currentTime->toLocalizedString('yyyy-MM-dd') == $data['date']) {
+            $test = 0;
+            $check = $this->schedule->findAll();
+            foreach ($check as $ck) {
+                if ($ck['date'] === $data['date']) {// kiểm tra xem ngày có trùng với lịch nào k 
+                    if ((int) $ck['id_class'] == $data['id_class']) {// kiêmr tra xem lớp có trùng lớp k 
+                        if ($ck['buoi'] === $data['buoi']) {// kiểm tra xem có trùng buổi k
+                            $test = true;
+                            $response = [
+                                        'status' => 'ResponseInterface::HTTP_BAD_REQUEST',
+                                        'message' => 'lịch học này đang trùng với lịch khác',
+                                    ];
+                            break;
+                        } 
+                    } 
+                } 
+            }
+            if (!$test&&$this->schedule->insert($data)) {
                 $response = [
                     'status' => ResponseInterface::HTTP_OK,
-                    'message' => 'Teacher added successfully',
+                    'message' => 'Thêm lịch học thành công!!!!!',
                     //'id' => $this->teachers->insertID(),
                 ];
-            } else {
-                throw new Exception('Failed to add teacher');
             }
-        } catch (Exception $e) {
+        }else{
             $response = [
-                'status' => 'ResponseInterface::HTTP_BAD_REQUEST',
-                'message' => $e->getMessage(),
-            ];
+                        'status' => 'ResponseInterface::HTTP_BAD_REQUEST',
+                        'message' => 'ngày học này ko còn so với thời gian hiện tại',
+                    ];
         }
         return $response;
+        //dd($currentTime->toLocalizedString('yyyy-MM-dd')<$data['date']);
+        // try {
+        //     if ($this->schedule->insert($data)) {
+        //         $response = [
+        //             'status' => ResponseInterface::HTTP_OK,
+        //             'message' => 'Teacher added successfully',
+        //             //'id' => $this->teachers->insertID(),
+        //         ];
+        //     } else {
+        //         throw new Exception('Failed to add teacher');
+        //     }
+        // } catch (Exception $e) {
+        //     $response = [
+        //         'status' => 'ResponseInterface::HTTP_BAD_REQUEST',
+        //         'message' => $e->getMessage(),
+        //     ];
+        // }
+        // return $response;
     }
 }

@@ -37,7 +37,7 @@
         background-color: #0056b3;
     }
 </style>
-    <div class="container-fluid">
+<div class="container-fluid">
 
     <button id="addLichhoc">Thêm lịch học</button>
     <form id="formAdd" action="admin/home/submit-form" method="post">
@@ -83,7 +83,13 @@
             <label for="end_time">Thời gian kết thúc:</label>
             <input type="time" id="end_time" name="end_time">
         </div>
-
+        <div class="form-group">
+            <label for="buoi">Buổi Học:</label>
+            <select id="buoi" name="buoi">
+                <option value="Sáng">Sáng</option>
+                <option value="Chiều">Chiều</option>
+            </select>
+        </div>
         <button type="submit">Submit</button>
     </form>
 
@@ -237,7 +243,7 @@
                 method: $(this).attr('method'),
                 data: $(this).serialize(),
                 success: function (response) {
-                    alert('Thêm lịch học thành công!');
+                    alert(response.message);
                     loadScheduleList();
                 },
                 error: function (xhr, status, error) {
@@ -252,11 +258,11 @@
         $.ajax({
             url: '<?= base_url('home/t') ?>', // Thay đổi đường dẫn và phương thức tương ứng
             method: 'GET',
-            success: function(response) {
+            success: function (response) {
                 // Thêm nội dung mới vào cuối danh sách
                 $('.schedule-list').append(response);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 // Xử lý khi load danh sách lịch học bị lỗi
                 console.error('Đã xảy ra lỗi: ' + error);
             }

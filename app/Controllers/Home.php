@@ -30,13 +30,13 @@ class Home extends BaseController
     }
     public function submitForm()
     {
-        if ($this->request->isAJAX()){
+         if ($this->request->isAJAX()){
         $data = [
             'id_subject' => (int)$this->request->getPost('subject'),
             'id_teacher' => (int)$this->request->getPost('teacher'),
             'id_class' => (int)$this->request->getPost('class'),
             'date' => $this->request->getPost('date'),
-            'buoi' => 'sang',
+            'buoi' => $this->request->getPost('buoi'),
             'timeStar' => $this->request->getPost('start_time'),
             'timeEnd' => $this->request->getPost('end_time'),
         ];
@@ -44,6 +44,6 @@ class Home extends BaseController
         // Xử lý dữ liệu ở đây (lưu vào cơ sở dữ liệu, gửi email, v.v.)
         // Trả về phản hồi cho client
         return $this->response->setJSON($this->schedule->addSchedule($data));
-    }
+        }
     }
 }
