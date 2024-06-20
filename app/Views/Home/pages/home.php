@@ -36,6 +36,21 @@
     button:hover {
         background-color: #0056b3;
     }
+    .early-morning {
+        background-color: blue; /* Màu khi trước 7 giờ sáng hoặc sau 13:30 */
+        color: white;
+    }
+
+    .default {
+        background-color: green; /* Màu mặc định */
+        color: white;
+    }
+
+    .disabled {
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.6; /* Giảm độ sáng để chỉ ra rằng thẻ bị vô hiệu hóa */
+    }
 </style>
 <div class="container-fluid">
 
@@ -134,7 +149,7 @@
                                         <p class="card-text">Buổi Học</p>
                                     </div>
                                     <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text"><?= $sc['buoi'] ?></p>
+                                        <p class="card-texts"><?= $sc['buoi'] ?></p>
                                     </div>
                                 </div>
                                 <div class="card bg-lightblue col-md-12 row_card">
@@ -146,7 +161,7 @@
                                     </div>
                                 </div>
                                 <a href="admin/diemdanh/<?= $sc['id_lichhoc'] ?>"
-                                    class="btn btn-success col-md-12 btn_custom">Tham Gia</a>
+                                    class="btn btn-success col-md-12 btn_custom default" id="btn_join">Tham Gia</a>
                             </div>
                         </div>
 
@@ -268,7 +283,57 @@
             }
         });
     }
-    // Gọi hàm loadScheduleList khi trang được tải lần đầu
+    $(document).ready(function() {
+        // Function to change the link color and disable based on time
+        function updateLinkColorAndState() {
+            var currentDate = new Date();
+            var currentHour = currentDate.getHours();
+            var currentMinutes = currentDate.getMinutes();
+
+            $('.card').each(function() {
+                var buoi = $(this).find('.card-texts').text().trim().toLowerCase();
+                var joinButton = $(this).find('.btn_custom');
+                console.log()
+                if (buoi === 'sáng') {
+                    if (currentHour < 7) {
+                        joinButton.addClass('disabled');
+                        joinButton.text('chưa tới giờ');
+                    }else if(currentHour >= 11 ){
+                        joinButton.addClass('disabled');
+                        joinButton.text('Đã hết thời gian');
+                    } 
+                    else {
+                        joinButton.removeClass('disabled');
+                    }
+                } else if (buoi === 'chiều') {
+                    if (currentHour < 13 || (currentHour === 13 && currentMinutes < 30)) {
+                        joinButton.addClass('disabled');
+                        joinButton.text('chưa tới giờ');
+                    }else if(currentHour >= 17){
+                        joinButton.addClass('disabled');
+                        joinButton.text('Đã hết thời gian');
+                    }
+                     else {
+                        joinButton.removeClass('disabled');
+                    }
+                }
+
+                // Set color classes based on buổi
+                if (currentHour < 7 || currentHour >= 13.5 && buoi === 'sáng') {
+                    joinButton.addClass('early-morning');
+                    joinButton.removeClass('default');
+                } else {
+                    joinButton.addClass('default');
+                    joinButton.removeClass('early-morning');
+                }
+            });
+        }
+
+        // Initial call to update link colors and state
+        updateLinkColorAndState();
+
+    });   
+       
 </script>
 
 <!-- /.container-fluid -->

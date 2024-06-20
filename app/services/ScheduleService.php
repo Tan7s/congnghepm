@@ -15,12 +15,14 @@ class scheduleService extends BaseService
 
 
     private $schedule;
+    public $currentTime;
     //Construct
     function __construct()
     {
         parent::__construct(); // dùng construct của thằng cha
         $this->schedule = new CreateSchedule();
         $this->schedule->protect(false); // không phải đinh nghĩa trong model UerModel
+        $this->currentTime = Time::now('Asia/Ho_Chi_Minh', 'en_US');
     }
     public function getSchedule()
     {
@@ -33,7 +35,7 @@ class scheduleService extends BaseService
             ->getResultArray();
     }
     public function getStudentsbyLichHoc($id_lichhoc)
-    {
+    {   
         return $this->schedule->table('lichhoc')
             ->select('student.name as studentName,lichhoc.buoi,lichhoc.date, student.id as id_student, lichhoc.id as id_lichhoc ')
             ->join('student_class', 'lichhoc.id_class = student_class.class_id')->where('lichhoc.id', $id_lichhoc)
@@ -43,9 +45,8 @@ class scheduleService extends BaseService
     }
     public function addSchedule($data)
     {
-        $currentTime = Time::now('Asia/Ho_Chi_Minh', 'en_US');
         //dd($data);
-        if ($currentTime->toLocalizedString('yyyy-MM-dd') < $data['date'] || $currentTime->toLocalizedString('yyyy-MM-dd') == $data['date']) {
+        if ($this->currentTime->toLocalizedString('yyyy-MM-dd') < $data['date'] || $this->currentTime->toLocalizedString('yyyy-MM-dd') == $data['date']) {
             $test = 0;
             $check = $this->schedule->findAll();
             foreach ($check as $ck) {
@@ -66,7 +67,6 @@ class scheduleService extends BaseService
                 $response = [
                     'status' => ResponseInterface::HTTP_OK,
                     'message' => 'Thêm lịch học thành công!!!!!',
-                    //'id' => $this->teachers->insertID(),
                 ];
             }
         }else{
@@ -76,23 +76,8 @@ class scheduleService extends BaseService
                     ];
         }
         return $response;
-        //dd($currentTime->toLocalizedString('yyyy-MM-dd')<$data['date']);
-        // try {
-        //     if ($this->schedule->insert($data)) {
-        //         $response = [
-        //             'status' => ResponseInterface::HTTP_OK,
-        //             'message' => 'Teacher added successfully',
-        //             //'id' => $this->teachers->insertID(),
-        //         ];
-        //     } else {
-        //         throw new Exception('Failed to add teacher');
-        //     }
-        // } catch (Exception $e) {
-        //     $response = [
-        //         'status' => 'ResponseInterface::HTTP_BAD_REQUEST',
-        //         'message' => $e->getMessage(),
-        //     ];
-        // }
-        // return $response;
+    }
+    public function deleteLichHoc($id){
+        $currentTime = Time::now('Asia/Ho_Chi_Minh', 'en_US');
     }
 }
