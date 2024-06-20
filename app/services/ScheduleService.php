@@ -78,6 +78,7 @@ class scheduleService extends BaseService
         return $response;
     }
     public function deleteLichHoc($id){
-        $currentTime = Time::now('Asia/Ho_Chi_Minh', 'en_US');
+        $deleted = $this->schedule->table('lichhoc')->delete(['id' => $id]);   
+        return $deleted;
     }
 }

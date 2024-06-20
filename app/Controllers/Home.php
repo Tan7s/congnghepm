@@ -46,4 +46,13 @@ class Home extends BaseController
         return $this->response->setJSON($this->schedule->addSchedule($data));
         }
     }
+    public function deleteSchedule(){
+        $scheduleId = $this->request->getPost('id');
+        
+        if ($this->schedule->deleteLichHoc($scheduleId)) {
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            return $this->response->setJSON(['success' => false]);
+        }
+    }
 }

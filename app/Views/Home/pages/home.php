@@ -36,20 +36,24 @@
     button:hover {
         background-color: #0056b3;
     }
+
     .early-morning {
-        background-color: blue; /* Màu khi trước 7 giờ sáng hoặc sau 13:30 */
+        background-color: blue;
+        /* Màu khi trước 7 giờ sáng hoặc sau 13:30 */
         color: white;
     }
 
     .default {
-        background-color: green; /* Màu mặc định */
+        background-color: green;
+        /* Màu mặc định */
         color: white;
     }
 
     .disabled {
         pointer-events: none;
         cursor: not-allowed;
-        opacity: 0.6; /* Giảm độ sáng để chỉ ra rằng thẻ bị vô hiệu hóa */
+        opacity: 0.6;
+        /* Giảm độ sáng để chỉ ra rằng thẻ bị vô hiệu hóa */
     }
 </style>
 <div class="container-fluid">
@@ -107,7 +111,62 @@
         </div>
         <button type="submit">Submit</button>
     </form>
-
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Môn</th>
+                            <th>Lớp</th>
+                            <th>Ngày</th>
+                            <th>Thời Gian</th>
+                            <th>Buổi Học</th>
+                            <th>Giảng Viên</th>
+                            <th>Xóa</th>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Môn</th>
+                            <th>Lớp</th>
+                            <th>Ngày</th>
+                            <th>Thời Gian</th>
+                            <th>Buổi Học</th>
+                            <th>Giảng Viên</th>
+                            <th>Xóa</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <?php foreach ($schedule as $sc): ?>
+                            <tr>
+                                <td class="editable" data-id=" data-field="id">
+                                    <?= $sc['subject_name'] ?>
+                                </td>
+                                <td class="editable" data-id="" data-field="name">
+                                    <?= $sc['nameClass'] ?>
+                                </td>
+                                <td class="editable" data-id="" data-field="magiaovien">
+                                    <?= $sc['date'] ?>
+                                </td>
+                                <td class="editable" data-id="" data-field="phone">
+                                    <?= $sc['timeStar'] ?> - <?= $sc['timeEnd'] ?>
+                                </td>
+                                <td class="editable" data-id="" data-field="trinhdo">
+                                    <?= $sc['buoi'] ?>
+                                </td>
+                                <td class="editable" data-id="" data-field="trinhdo">
+                                    <?= $sc['teacher_name'] ?>
+                                </td>
+                                <td>
+                                    <button class="delete-btn" data-id="<?= $sc['id_lichhoc'] ?>">Xóa</button>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
     <div class="container mt-5 ">
         <h2 class="text-center mb-4">Lịch Học</h2>
         <div class="row row-schedule-list">
@@ -283,14 +342,14 @@
             }
         });
     }
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Function to change the link color and disable based on time
         function updateLinkColorAndState() {
             var currentDate = new Date();
             var currentHour = currentDate.getHours();
             var currentMinutes = currentDate.getMinutes();
 
-            $('.card').each(function() {
+            $('.card').each(function () {
                 var buoi = $(this).find('.card-texts').text().trim().toLowerCase();
                 var joinButton = $(this).find('.btn_custom');
                 console.log()
@@ -298,10 +357,10 @@
                     if (currentHour < 7) {
                         joinButton.addClass('disabled');
                         joinButton.text('chưa tới giờ');
-                    }else if(currentHour >= 11 ){
+                    } else if (currentHour >= 11) {
                         joinButton.addClass('disabled');
                         joinButton.text('Đã hết thời gian');
-                    } 
+                    }
                     else {
                         joinButton.removeClass('disabled');
                     }
@@ -309,11 +368,11 @@
                     if (currentHour < 13 || (currentHour === 13 && currentMinutes < 30)) {
                         joinButton.addClass('disabled');
                         joinButton.text('chưa tới giờ');
-                    }else if(currentHour >= 17){
+                    } else if (currentHour >= 17) {
                         joinButton.addClass('disabled');
                         joinButton.text('Đã hết thời gian');
                     }
-                     else {
+                    else {
                         joinButton.removeClass('disabled');
                     }
                 }
@@ -332,8 +391,44 @@
         // Initial call to update link colors and state
         updateLinkColorAndState();
 
-    });   
-       
+    });
+
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            const scheduleId = this.getAttribute("data-id");
+            console.log(scheduleId);
+            // Thực hiện yêu cầu AJAX để xóa giáo viên
+            fetch(`admin/deleteSchedule`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `id=${scheduleId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.success);
+                if (data.success) {
+                    
+                    alert("xóa thành công");
+                    // Xóa hàng trong bảng nếu xóa thành công
+                    const row = this.closest("tr");
+                    row.remove();
+                } else {
+                    alert("Xóa lịch thành công");
+                }
+            })
+            .catch(error => {
+                console.error("Lỗi:", error);
+            });
+        });
+    });
+});
 </script>
 
 <!-- /.container-fluid -->
