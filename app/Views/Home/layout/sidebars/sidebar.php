@@ -46,6 +46,9 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Chỉnh sửa danh sách:</h6>
                 <a class="collapse-item" href="admin/list-giaovien">Danh Giáo Viên</a>
+                <a class="collapse-item" href="utilities-border.html">Borders</a>
+                <a class="collapse-item" href="utilities-animation.html">Animations</a>
+                <a class="collapse-item" href="utilities-other.html">Other</a>
             </div>
         </div>
     </li>
@@ -69,9 +72,9 @@
 
     <!-- Nav Item - Tables -->
     <li class="nav-item">
-        <a class="nav-link" href="tables.html">
+        <a class="nav-link" href="admin/bangdiem">
             <i class="fas fa-fw fa-table"></i>
-            <span>Tables</span></a>
+            <span>Bảng điểm</span></a>
     </li>
 
     <!-- Divider -->
