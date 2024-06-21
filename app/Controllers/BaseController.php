@@ -60,6 +60,8 @@ abstract class BaseController extends Controller
     public function loadLayout($data, $title, $content, $dataLayout = [], $cssFiles = [], $jsFiles = [])
     {
         $data['title'] = $title;
+        $data['cssFiles'] = $cssFiles;
+        $data['jsFiles'] = $jsFiles;
         $data['header'] = view('Home/layout/header/header', $dataLayout);
         $data['sidebar'] = view('Home/layout/sidebars/sidebar', $dataLayout);
         $data['content'] = view($content, $dataLayout);
