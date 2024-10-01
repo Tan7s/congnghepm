@@ -19,12 +19,20 @@ class Home extends BaseController
 
     }
     public function index(): string
-    {
+    {   //dd(session()->get('user_login'));
         $data = [];
         $datas["class"] = $this->class->getClass();
         $datas["schedule"] = $this->schedule->getSchedule();
         $datas["teacher"] = $this->teacher->getAllTeachers();
         $datas["subject"] = $this->subject->getAllSubject();
+        if(session()->get('user_login')['code']){
+            if(session()->get('user_login')['loai']==0){
+                $datas['code']=$this->class->getLichhocByClass(session()->get('user_login')['code']);
+            }
+            elseif(session()->get('user_login')['loai']==1){
+                $datas['code']=$this->schedule->getLichDayTeacher(session()->get('user_login')['code']);
+            }
+        }
         $data = $this->loadLayout($data, 'Trang chủ', 'Home/pages/home', $datas, [], []);
         return view('Home/index', $data);
     }

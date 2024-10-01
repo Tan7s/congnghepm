@@ -11,7 +11,7 @@ use App\Models\CreateStudentModel;
 class ClassServices extends BaseService
 {
 
-    
+
 
     private $class;
     private $studentClass;
@@ -31,14 +31,25 @@ class ClassServices extends BaseService
     {
         return $this->class->findAll();
     }
-    public function studentAddClass($idClass){
-        $endStudent=$this->endStudent->table('student')->orderby('id','DESC')->limit(1)->get()->getRowArray();
+    public function studentAddClass($idClass)
+    {
+        $endStudent = $this->endStudent->table('student')->orderby('id', 'DESC')->limit(1)->get()->getRowArray();
         $data = [
-            'student_id' => (int)$endStudent['id'],
+            'student_id' => (int) $endStudent['id'],
             'class_id' => (int) $idClass,
         ];
         $this->studentClass->table('student_class')->insert($data);
         return 0;
+    }
+    public function getLichhocByClass($codeStudent)
+    {
+        return $this->studentClass->table('student_class')
+            ->select('student_class.class_id')
+            ->join('student', 'student_class.student_id = student.id')
+            ->join('users', 'users.user_id = student.masinhvien')
+            ->where('users.user_id', $codeStudent)
+            ->get()
+            ->getResultArray();
     }
 
 }

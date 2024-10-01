@@ -57,176 +57,198 @@
     }
 </style>
 <div class="container-fluid">
+    <?php
+    if (session()->get('user_login')['type'] == 'admin'): // Sử dụng dấu ':' để mở câu lệnh điều kiện
+        ?>
+        <button id="addLichhoc">Thêm lịch học</button>
+        <form id="formAdd" action="admin/home/submit-form" method="post">
+            <span class="close">&times;</span>
+            <div class="form-group">
+                <label for="class">Lớp:</label>
+                <select id="class" name="class">
+                    <?php foreach ($class as $cl): ?>
+                        <option value="<?= $cl['id'] ?>"><?= $cl['nameClass'] ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
 
-    <button id="addLichhoc">Thêm lịch học</button>
-    <form id="formAdd" action="admin/home/submit-form" method="post">
-        <span class="close">&times;</span>
-        <div class="form-group">
-            <label for="class">Lớp:</label>
-            <select id="class" name="class">
-                <?php foreach ($class as $cl): ?>
-                    <option value="<?= $cl['id'] ?>"><?= $cl['nameClass'] ?></option>
-                <?php endforeach ?>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="teacher">Giáo viên:</label>
+                <select id="teacher" name="teacher">
+                    <?php foreach ($teacher as $tc): ?>
+                        <option value="<?= $tc['id'] ?>"><?= $tc['name'] ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="teacher">Giáo viên:</label>
-            <select id="teacher" name="teacher">
-                <?php foreach ($teacher as $tc): ?>
-                    <option value="<?= $tc['id'] ?>"><?= $tc['name'] ?></option>
-                <?php endforeach ?>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="subject">Môn học:</label>
+                <select id="subject" name="subject">
+                    <?php foreach ($subject as $sj): ?>
+                        <option value="<?= $sj['id'] ?>"><?= $sj['name'] ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
 
-        <div class="form-group">
-            <label for="subject">Môn học:</label>
-            <select id="subject" name="subject">
-                <?php foreach ($subject as $sj): ?>
-                    <option value="<?= $sj['id'] ?>"><?= $sj['name'] ?></option>
-                <?php endforeach ?>
-            </select>
-        </div>
+            <div class="form-group">
+                <label for="date">Ngày tháng:</label>
+                <input type="date" id="date" name="date">
+            </div>
 
-        <div class="form-group">
-            <label for="date">Ngày tháng:</label>
-            <input type="date" id="date" name="date">
-        </div>
+            <div class="form-group">
+                <label for="start_time">Thời gian bắt đầu:</label>
+                <input type="time" id="start_time" name="start_time">
+            </div>
 
-        <div class="form-group">
-            <label for="start_time">Thời gian bắt đầu:</label>
-            <input type="time" id="start_time" name="start_time">
-        </div>
-
-        <div class="form-group">
-            <label for="end_time">Thời gian kết thúc:</label>
-            <input type="time" id="end_time" name="end_time">
-        </div>
-        <div class="form-group">
-            <label for="buoi">Buổi Học:</label>
-            <select id="buoi" name="buoi">
-                <option value="Sáng">Sáng</option>
-                <option value="Chiều">Chiều</option>
-            </select>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Môn</th>
-                            <th>Lớp</th>
-                            <th>Ngày</th>
-                            <th>Thời Gian</th>
-                            <th>Buổi Học</th>
-                            <th>Giảng Viên</th>
-                            <th>Xóa</th>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Môn</th>
-                            <th>Lớp</th>
-                            <th>Ngày</th>
-                            <th>Thời Gian</th>
-                            <th>Buổi Học</th>
-                            <th>Giảng Viên</th>
-                            <th>Xóa</th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        <?php foreach ($schedule as $sc): ?>
+            <div class="form-group">
+                <label for="end_time">Thời gian kết thúc:</label>
+                <input type="time" id="end_time" name="end_time">
+            </div>
+            <div class="form-group">
+                <label for="buoi">Buổi Học:</label>
+                <select id="buoi" name="buoi">
+                    <option value="Sáng">Sáng</option>
+                    <option value="Chiều">Chiều</option>
+                </select>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
                             <tr>
-                                <td class="editable" data-id=" data-field="id">
-                                    <?= $sc['subject_name'] ?>
-                                </td>
-                                <td class="editable" data-id="" data-field="name">
-                                    <?= $sc['nameClass'] ?>
-                                </td>
-                                <td class="editable" data-id="" data-field="magiaovien">
-                                    <?= $sc['date'] ?>
-                                </td>
-                                <td class="editable" data-id="" data-field="phone">
-                                    <?= $sc['timeStar'] ?> - <?= $sc['timeEnd'] ?>
-                                </td>
-                                <td class="editable" data-id="" data-field="trinhdo">
-                                    <?= $sc['buoi'] ?>
-                                </td>
-                                <td class="editable" data-id="" data-field="trinhdo">
-                                    <?= $sc['teacher_name'] ?>
-                                </td>
-                                <td>
-                                    <button class="delete-btn" data-id="<?= $sc['id_lichhoc'] ?>">Xóa</button>
-                                </td>
+                                <th>Môn</th>
+                                <th>Lớp</th>
+                                <th>Ngày</th>
+                                <th>Thời Gian</th>
+                                <th>Buổi Học</th>
+                                <th>Giảng Viên</th>
+                                <th>Xóa</th>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Môn</th>
+                                <th>Lớp</th>
+                                <th>Ngày</th>
+                                <th>Thời Gian</th>
+                                <th>Buổi Học</th>
+                                <th>Giảng Viên</th>
+                                <th>Xóa</th>
                             </tr>
-                        <?php endforeach ?>
-                    </tbody>
-                </table>
+                        </tfoot>
+                        <tbody>
+                            <?php foreach ($schedule as $sc): ?>
+                                <tr>
+                                    <td class="editable" data-id=" data-field=" id">
+                                        <?= $sc['subject_name'] ?>
+                                    </td>
+                                    <td class="editable" data-id="" data-field="name">
+                                        <?= $sc['nameClass'] ?>
+                                    </td>
+                                    <td class="editable" data-id="" data-field="magiaovien">
+                                        <?= $sc['date'] ?>
+                                    </td>
+                                    <td class="editable" data-id="" data-field="phone">
+                                        <?= $sc['timeStar'] ?> - <?= $sc['timeEnd'] ?>
+                                    </td>
+                                    <td class="editable" data-id="" data-field="trinhdo">
+                                        <?= $sc['buoi'] ?>
+                                    </td>
+                                    <td class="editable" data-id="" data-field="trinhdo">
+                                        <?= $sc['teacher_name'] ?>
+                                    </td>
+                                    <td>
+                                        <button class="delete-btn" data-id="<?= $sc['id_lichhoc'] ?>">Xóa</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    <?php endif; // Sử dụng 'endif' để đóng câu lệnh điều kiện ?>
     <div class="container mt-5 ">
         <h2 class="text-center mb-4">Lịch Học</h2>
         <div class="row row-schedule-list">
-            <?php foreach ($schedule as $sc): ?>
-                <div class="col-md-4 mb-4">
-                    <div class="card bg-lightblue">
+            <?php
+            $currentDate = date('Y-m-d'); // Lấy ngày hiện tại
+            
+            foreach ($schedule as $sc):
+                if (isset($code[0])) {
+                    if (
+                        session()->get('user_login')['type'] != 'admin' &&
+                        (
+                            (array_key_exists('class_id', $code[0]) && $code[0]['class_id'] == $sc['idClass']) ||
+                            (array_key_exists('id_teacher', $code[0]) && $code[0]['id_teacher'] == $sc['id_teacher'])
+                        )
+                    ) {
+                        // Kiểm tra nếu ngày trong $sc['date'] đã quá ngày hiện tại
+                        if (strtotime($sc['date']) < strtotime($currentDate)) {
+                            continue; // Bỏ qua phần tử này
+                        }
+                        ?>
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-lightblue">
 
-                        <div class="card-header col-md-12">
-                            <div class="col-md-4 img_header">
-                                <img class="card-img-top"
-                                    src="https://daotao.tnpc.edu.vn/public/template/default/black/images/BKTN111.png"
-                                    alt="Card image">
-                            </div>
-                            <div class="col-md-8 title_header">
-                                <p class="card-text badge text-wrap text_header">Môn: <?= $sc['subject_name'] ?></p>
-                                <p class="card-text"><?= $sc['nameClass'] ?></p>
+                                <div class="card-header col-md-12">
+                                    <div class="col-md-4 img_header">
+                                        <img class="card-img-top"
+                                            src="https://daotao.tnpc.edu.vn/public/template/default/black/images/BKTN111.png"
+                                            alt="Card image">
+                                    </div>
+                                    <div class="col-md-8 title_header">
+                                        <p class="card-text badge text-wrap text_header">Môn: <?= $sc['subject_name'] ?></p>
+                                        <p class="card-text"><?= $sc['nameClass'] ?></p>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="card-info">
+                                        <div class="card bg-lightblue col-md-12 row_card">
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-text">Ngày:</p>
+                                            </div>
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-text"><?= $sc['date'] ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="card bg-lightblue col-md-12 row_card">
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-text">Thời Gian: </p>
+                                            </div>
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-text"><?= $sc['timeStar'] ?> - <?= $sc['timeEnd'] ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="card bg-lightblue col-md-12 row_card">
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-text">Buổi Học</p>
+                                            </div>
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-texts"><?= $sc['buoi'] ?></p>
+                                            </div>
+                                        </div>
+                                        <div class="card bg-lightblue col-md-12 row_card">
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-text">Giảng Viên:</p>
+                                            </div>
+                                            <div class="card bg-lightblue col-md-6 row_card_chill">
+                                                <p class="card-text"><?= $sc['teacher_name'] ?></p>
+                                            </div>
+                                        </div>
+                                        <a href="admin/diemdanh/<?= $sc['id_lichhoc'] ?>"
+                                            class="btn btn-success col-md-12 btn_custom default" id="btn_join">Tham Gia</a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="card-info">
-                                <div class="card bg-lightblue col-md-12 row_card">
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text">Ngày:</p>
-                                    </div>
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text"><?= $sc['date'] ?></p>
-                                    </div>
-                                </div>
-                                <div class="card bg-lightblue col-md-12 row_card">
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text">Thời Gian: </p>
-                                    </div>
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text"><?= $sc['timeStar'] ?> - <?= $sc['timeEnd'] ?></p>
-                                    </div>
-                                </div>
-                                <div class="card bg-lightblue col-md-12 row_card">
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text">Buổi Học</p>
-                                    </div>
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-texts"><?= $sc['buoi'] ?></p>
-                                    </div>
-                                </div>
-                                <div class="card bg-lightblue col-md-12 row_card">
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text">Giảng Viên:</p>
-                                    </div>
-                                    <div class="card bg-lightblue col-md-6 row_card_chill">
-                                        <p class="card-text"><?= $sc['teacher_name'] ?></p>
-                                    </div>
-                                </div>
-                                <a href="admin/diemdanh/<?= $sc['id_lichhoc'] ?>"
-                                    class="btn btn-success col-md-12 btn_custom default" id="btn_join">Tham Gia</a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            <?php endforeach ?>
+                    <?php }
+                }
+                ;
+            endforeach ?>
             <!-- Add more boxes as needed -->
         </div>
     </div>
@@ -395,40 +417,40 @@
 
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const deleteButtons = document.querySelectorAll(".delete-btn");
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
 
-    deleteButtons.forEach(button => {
-        button.addEventListener("click", function() {
-            const scheduleId = this.getAttribute("data-id");
-            console.log(scheduleId);
-            // Thực hiện yêu cầu AJAX để xóa giáo viên
-            fetch(`admin/deleteSchedule`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: `id=${scheduleId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.success);
-                if (data.success) {
-                    
-                    alert("xóa thành công");
-                    // Xóa hàng trong bảng nếu xóa thành công
-                    const row = this.closest("tr");
-                    row.remove();
-                } else {
-                    alert("Xóa lịch thành công");
-                }
-            })
-            .catch(error => {
-                console.error("Lỗi:", error);
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const scheduleId = this.getAttribute("data-id");
+                console.log(scheduleId);
+                // Thực hiện yêu cầu AJAX để xóa giáo viên
+                fetch(`admin/deleteSchedule`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `id=${scheduleId}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.success);
+                        if (data.success) {
+
+                            alert("xóa thành công");
+                            // Xóa hàng trong bảng nếu xóa thành công
+                            const row = this.closest("tr");
+                            row.remove();
+                        } else {
+                            alert("Xóa lịch thành công");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Lỗi:", error);
+                    });
             });
         });
     });
-});
 </script>
 
 <!-- /.container-fluid -->

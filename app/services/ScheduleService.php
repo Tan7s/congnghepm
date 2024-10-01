@@ -27,7 +27,7 @@ class scheduleService extends BaseService
     public function getSchedule()
     {
         return $this->schedule->table('lichhoc')
-            ->select('subject.name as subject_name, teacher.name as teacher_name, class.nameClass,lichhoc.id as id_lichhoc,lichhoc.buoi,lichhoc.date,lichhoc.timeStar,lichhoc.timeEnd')
+            ->select('subject.name as subject_name, teacher.name as teacher_name, class.nameClass,lichhoc.id_class as idClass,lichhoc.id as id_lichhoc,lichhoc.id_teacher,lichhoc.buoi,lichhoc.date,lichhoc.timeStar,lichhoc.timeEnd')
             ->join('subject', 'lichhoc.id_subject = subject.id')
             ->join('teacher', 'lichhoc.id_teacher = teacher.id')
             ->join('class', 'lichhoc.id_class = class.id')
@@ -80,5 +80,14 @@ class scheduleService extends BaseService
     public function deleteLichHoc($id){
         $deleted = $this->schedule->table('lichhoc')->delete(['id' => $id]);   
         return $deleted;
+    }
+    public function getLichDayTeacher($codeTeacher){
+         return $this->schedule->table('lichhoc')
+        ->select('lichhoc.id_teacher')
+        ->join('teacher', 'lichhoc.id_teacher = teacher.id')
+        ->join('users', 'teacher.magiaovien = user_id')
+        ->where('teacher.magiaovien', $codeTeacher)
+        ->get()
+        ->getResultArray();
     }
 }
