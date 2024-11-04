@@ -22,4 +22,3 @@ class BangDiemController extends BaseController
     }
     
 }
-?>

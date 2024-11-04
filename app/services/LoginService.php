@@ -62,20 +62,17 @@ class LoginService extends BaseService
         unset($user['password']);
         $check = substr($param['user_id'],0,2);
         if (strcasecmp($check, 'sv') === 0) {
-            $student= $this->student->select('name,masinhvien')->where('masinhvien',$param['user_id'])->get()->getRowArray();
+            $student= $this->student->select('name')->where('masinhvien',$param['user_id'])->get()->getRowArray();
             $user['name'] = $student['name'];
             $user['loai'] = 0;
-            $user['code'] = $student['masinhvien'];
-        } elseif(strcasecmp($check, 'gv') === 0) {
-            $teacher= $this->teacher->select('name,magiaovien')->where('magiaovien',$param['user_id'])->get()->getRowArray();
+        } elseif(strcasecmp($check, 'sv') === 0) {
+            $teacher= $this->teacher->select('name')->where('magiaovien',$param['user_id'])->get()->getRowArray();
             $user['name'] = $teacher['name'];
             $user['loai'] = 1;
-            $user['code'] = $teacher['magiaovien'];
         }else{
             $admin= $this->users->select('type')->where('user_id',$param['user_id'])->get()->getRowArray();
             $user['name'] = $admin['type'];
             $user['loai'] = 2;
-            $user['code'] = null;
         }
         $session->set('user_login', $user);
         return [

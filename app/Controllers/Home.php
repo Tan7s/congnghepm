@@ -25,7 +25,7 @@ class Home extends BaseController
         $datas["schedule"] = $this->schedule->getSchedule();
         $datas["teacher"] = $this->teacher->getAllTeachers();
         $datas["subject"] = $this->subject->getAllSubject();
-        if(session()->get('user_login')['code']){
+        if(session()->get(key: 'user_login')['code']){
             if(session()->get('user_login')['loai']==0){
                 $datas['code']=$this->class->getLichhocByClass(session()->get('user_login')['code']);
             }

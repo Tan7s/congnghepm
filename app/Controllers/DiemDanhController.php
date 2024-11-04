@@ -51,4 +51,3 @@ class DiemDanhController extends BaseController
         }
     }
 }
-?>

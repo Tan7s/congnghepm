@@ -71,4 +71,3 @@ class SinhvienController extends BaseController
 
 }
 
-?>

@@ -9,7 +9,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use PHPUnit\Framework\Attributes\BeforeClass;
 use CodeIgniter\I18n\Time;
 
-class scheduleService extends BaseService
+class ScheduleService extends BaseService
 {
 
 

@@ -40,7 +40,6 @@ $routes->group('admin', ['filter' => 'UserFilter'], function ($routes) {
             $routes->post('subject/add_major', 'MonHocController::addMajor');
             $routes->post('teachers/addTeacher', 'GiaovienController::addTeacher');
             $routes->post('deleteTeacher', 'GiaovienController::deleteTeachers');
-            $routes->post('deleteSchedule', 'Home::deleteSchedule');
         });
     });
 });
