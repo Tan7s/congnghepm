@@ -41,7 +41,7 @@ class Home extends BaseController
             'timeEnd' => $this->request->getPost('end_time'),
         ];
 
-        // Xử lý dữ liệu ở đây (lưu vào cơ sở dữ liệu, gửi email, v.v.)
+        // Xử lý dữ liệu ở đây (lưu vào cơ sở dữ liệu, gửi email, v.v.,//)
         // Trả về phản hồi cho client
         return $this->response->setJSON($this->schedule->addSchedule($data));
     }
